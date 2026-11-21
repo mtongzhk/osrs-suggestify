@@ -14,6 +14,10 @@ export const IPC_CHANNELS = {
   SETTINGS_SET: 'suggestify:settings:set',
   HISTORY_GET: 'suggestify:history:get',
   HISTORY_ADD: 'suggestify:history:add',
+  ACCOUNT_CONNECT: 'suggestify:account:connect',
+  ACCOUNT_GET: 'suggestify:account:get',
+  ACCOUNT_REFRESH: 'suggestify:account:refresh',
+  ACCOUNT_DISCONNECT: 'suggestify:account:disconnect',
 };
 
 export const DEFAULT_SETTINGS = {

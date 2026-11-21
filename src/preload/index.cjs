@@ -11,6 +11,10 @@ const CHANNELS = {
   SETTINGS_SET: 'suggestify:settings:set',
   HISTORY_GET: 'suggestify:history:get',
   HISTORY_ADD: 'suggestify:history:add',
+  ACCOUNT_CONNECT: 'suggestify:account:connect',
+  ACCOUNT_GET: 'suggestify:account:get',
+  ACCOUNT_REFRESH: 'suggestify:account:refresh',
+  ACCOUNT_DISCONNECT: 'suggestify:account:disconnect',
 };
 
 contextBridge.exposeInMainWorld('suggestify', {
@@ -20,6 +24,10 @@ contextBridge.exposeInMainWorld('suggestify', {
   setSettings: (patch) => ipcRenderer.invoke(CHANNELS.SETTINGS_SET, patch),
   getHistory: () => ipcRenderer.invoke(CHANNELS.HISTORY_GET),
   addHistoryEntry: (entry) => ipcRenderer.invoke(CHANNELS.HISTORY_ADD, entry),
+  connectAccount: (rsn) => ipcRenderer.invoke(CHANNELS.ACCOUNT_CONNECT, rsn),
+  getAccount: () => ipcRenderer.invoke(CHANNELS.ACCOUNT_GET),
+  refreshAccount: () => ipcRenderer.invoke(CHANNELS.ACCOUNT_REFRESH),
+  disconnectAccount: () => ipcRenderer.invoke(CHANNELS.ACCOUNT_DISCONNECT),
   onStateChanged: (callback) => {
     const listener = (_event, state) => callback(state);
     ipcRenderer.on(CHANNELS.STATE_CHANGED, listener);
