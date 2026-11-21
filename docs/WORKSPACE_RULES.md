@@ -49,7 +49,11 @@ fix(renderer): correct elapsed-time display rollover at 60 minutes
   - Screenshots for any UI change.
   - Notes on OSRS-rule implications if the change touches account data or game detection.
 - Keep PRs small and reviewable; split large changes.
-- At least one approval required before merge. The PR author cannot approve their own PR.
+- **Solo-developer workflow:** there is no second reviewer. Before merging, the author must
+  perform the self-review checklist in §5 and record the result in the PR description
+  (e.g. a "Self-review" section confirming each checklist item was checked). Self-approval
+  is permitted only after this checklist is completed; merging without it is a process
+  violation.
 - CI (once added) must pass: lint, tests, and build.
 
 ## 4. Code conventions
@@ -74,13 +78,21 @@ fix(renderer): correct elapsed-time display rollover at 60 minutes
 
 ## 5. Review procedures
 
-- Reviews check, at minimum:
+OSRS Suggestify currently has a single developer, so all reviews are **self-reviews**
+performed by the PR author before merge. The PR description must include a "Self-review"
+section confirming each item below was checked, with notes for anything that failed or was
+waived.
+
+- Self-review checks, at minimum:
   1. Correctness against the user story's acceptance criteria in `docs/TASKS.md`.
   2. Electron security rules above.
   3. OSRS-rule compliance for anything touching account data or detection.
   4. Cross-platform safety (no macOS/Windows-only assumptions without guards).
-- Requested changes must be addressed or explicitly discussed before re-review.
-- Docs (`docs/*.md`) changes get a lighter review but still require a PR.
+- Issues found during self-review must be fixed on the branch (or explicitly justified in
+  the PR) before merge. There is no re-review cycle — the author re-checks the final diff.
+- Docs (`docs/*.md`) changes still require a PR and a (lighter) self-review.
+- If the project later gains additional contributors, this section must be updated to
+  restore peer review before further merges.
 - The two source PDFs in `docs/` are **immutable** — never edit, rename, or delete them.
 
 ## 6. Definition of done
@@ -90,5 +102,5 @@ A task is done when:
 - Its acceptance criteria in `docs/TASKS.md` are met.
 - `npm start` runs cleanly with no console errors.
 - Relevant verification (lint/tests — once tooling exists) passes.
-- The PR is reviewed and approved, and `docs/TASKS.md` / `docs/PRD.md` are updated if scope or
-  decisions changed.
+- The PR has completed the self-review process in §5 and is merged, and `docs/TASKS.md` /
+  `docs/PRD.md` are updated if scope or decisions changed.
