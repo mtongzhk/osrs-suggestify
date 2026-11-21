@@ -168,6 +168,9 @@ remains the fallback if binary size or memory becomes a problem.
 6. **Suggestion algorithm:** how to weight recent history vs. incomplete content; how many
    suggestions to show; whether suggestions repeat.
 7. **Alert snooze duration:** "a few minutes" — exact options (e.g. 5/15/30 min) TBD.
-8. **Persistence format and location** for settings/history (JSON vs SQLite; userData dir).
+8. **Persistence format and location** for settings/history — **decided (T0.3):** plain JSON
+   files (`settings.json`, `history.json`) under Electron's `userData` directory, written
+   atomically; corrupt files are quarantined and defaults restored. Revisit SQLite if history
+   volume demands it.
 9. **Packaging/distribution:** how will players install the app (unsigned binaries, code
    signing, app stores)?
