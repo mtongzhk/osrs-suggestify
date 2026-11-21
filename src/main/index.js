@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LocalPersistence } from '../data/persistence.js';
 import { IPC_CHANNELS } from '../shared/constants.js';
+import { createAccountController } from './account.js';
 import { attachStateBroadcast, registerIpcHandlers } from './ipc.js';
 import { StateStore } from './stateStore.js';
 
@@ -11,6 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = process.argv.includes('--dev');
 
 let broadcastState;
+const windows = new Set();
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -25,6 +27,11 @@ function createWindow() {
       nodeIntegration: false,
     },
   });
+
+  // Retain a reference — an unreferenced BrowserWindow can be GC'd, which
+  // closes the window unexpectedly.
+  windows.add(win);
+  win.on('closed', () => windows.delete(win));
 
   win.webContents.on('did-finish-load', () => {
     broadcastState?.(win.webContents);
@@ -52,12 +59,22 @@ app.whenReady().then(async () => {
     settings,
     currentActivity: null,
     sessionStartedAt: null,
+    account: null,
   });
 
-  registerIpcHandlers({ store, persistence });
+  const account = createAccountController({ store, persistence });
+
+  registerIpcHandlers({ store, persistence, account });
   broadcastState = attachStateBroadcast(store);
 
   createWindow();
+
+  // Restore the connected account from persisted settings, if any.
+  if (settings.rsn) {
+    account.connect(settings.rsn).catch((err) => {
+      console.error('Failed to restore OSRS account:', err);
+    });
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

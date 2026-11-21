@@ -144,6 +144,12 @@ remains the fallback if binary size or memory becomes a problem.
 - **Account progress / completed content** (needed by US-1, US-7): OSRS has no single official
   "full account progress" API. Candidate sources include community APIs and the official
   Hiscores endpoints; coverage of quests/bosses/minigames varies. Must be investigated.
+  - **Decision (T1.1):** skill levels/XP and activity scores (boss KC, clues, minigames)
+    are fetched from the official Jagex Hiscores endpoint
+    (`secure.runescape.com/m=hiscore_oldschool/index_lite.json`) — public, read-only, no
+    credentials. Quest/diary/collection-log completion is NOT covered by Hiscores; a
+    supplementary source (e.g. OSRS Wiki WikiSync or a community API) is still required
+    before US-7 can reason about "content not yet completed" (see §8 Q2).
 - **Current activity detection** (US-2): **no confirmed integration exists.** See below.
 
 ## 8. Unresolved questions

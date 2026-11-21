@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 import { APP_VERSION, DEFAULT_SETTINGS, IPC_CHANNELS } from '../shared/constants.js';
+import { normalizeRsn } from '../shared/rsn.js';
 
 const SETTINGS_KEYS = new Set(Object.keys(DEFAULT_SETTINGS));
 
@@ -15,6 +16,9 @@ function validateSettingsPatch(patch) {
     if (key === 'rsn') {
       if (value !== null && typeof value !== 'string') {
         throw new Error('rsn must be a string or null');
+      }
+      if (value !== null && normalizeRsn(value) === null) {
+        throw new Error('rsn is not a valid OSRS display name');
       }
     } else if (value !== null && (typeof value !== 'number' || value <= 0)) {
       throw new Error(`${key} must be a positive number or null`);
@@ -36,7 +40,7 @@ function validateHistoryEntry(entry) {
   }
 }
 
-export function registerIpcHandlers({ store, persistence }) {
+export function registerIpcHandlers({ store, persistence, account }) {
   ipcMain.handle(IPC_CHANNELS.PING, () => ({
     pong: true,
     version: APP_VERSION,
@@ -61,6 +65,14 @@ export function registerIpcHandlers({ store, persistence }) {
     validateHistoryEntry(entry);
     return persistence.addHistoryEntry(entry);
   });
+
+  ipcMain.handle(IPC_CHANNELS.ACCOUNT_CONNECT, (_event, rsn) => account.connect(rsn));
+
+  ipcMain.handle(IPC_CHANNELS.ACCOUNT_GET, () => store.getState().account ?? null);
+
+  ipcMain.handle(IPC_CHANNELS.ACCOUNT_REFRESH, () => account.refresh());
+
+  ipcMain.handle(IPC_CHANNELS.ACCOUNT_DISCONNECT, () => account.disconnect());
 }
 
 // Pushes store snapshots to every registered renderer. Call the returned
